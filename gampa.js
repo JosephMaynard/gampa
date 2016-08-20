@@ -1,29 +1,39 @@
-var track = {
+var gampa = (function(){
 
-	tid: 'UA-44687118-28',
+	var settings = {
 
-	url: 'https://creative.mobileembrace.com/test/analytics.php?',
-	cid: (new Date).getTime() + Math.floor(1e8 * Math.random()),
-	dh: (window.location.host != '' ? encodeURIComponent(window.location.host) : 'not_set'),
-	dp: (window.location.pathname != '' ? encodeURIComponent(window.location.pathname) : 'not_set'),
-	dt: (document.title != '' ? encodeURIComponent(document.title) : 'not_set'),
+		tid: 'UA-********-**',
+		url: 'https://example.com/gampa.php?',
 
-	loadPixel: function(pixelURL){
+		cid: createUID(),
+		dh: (window.location.host != '' ? encodeURIComponent(window.location.host) : 'not_set'),
+		dp: (window.location.pathname != '' ? encodeURIComponent(window.location.pathname) : 'not_set'),
+		dt: (document.title != '' ? encodeURIComponent(document.title) : 'not_set'),		
+	}
+
+	function createUID(){
+		return ((new Date).getTime()).toString(36) + Math.floor(1e8 * Math.random()).toString(36);
+	}
+
+	function loadPixel(pixelURL){
 		var pixel = new Image();
-		pixel.src = pixelURL + '&z=' + ((new Date).getTime()).toString(36) + Math.floor(1e8 * Math.random()).toString(36);
-	},
+		pixel.src = pixelURL + '&z=' + createUID();
+	}
 
-	pageview: function(){
-		this.loadPixel(this.url + 't=pageview&tid=' + this.tid + '&cid=' + this.cid + '&dh=' + this.dh + '&dp=' + this.dp + '&dt=' + this.dt);
-		// return this.url + 't=pageview&tid=' + this.tid + '&cid=' + this.cid + '&dh=' + this.dh + '&dp=' + this.dp + '&dt=' + this.dt;
-	},
+	function pageview(){
+		loadPixel(settings.url + 't=pageview&tid=' + settings.tid + '&cid=' + settings.cid + '&dh=' + settings.dh + '&dp=' + settings.dp + '&dt=' + settings.dt);
+		// return settings.url + 't=pageview&tid=' + settings.tid + '&cid=' + settings.cid + '&dh=' + settings.dh + '&dp=' + settings.dp + '&dt=' + settings.dt;
+	}
 
-	event(category, action){
-		this.loadPixel(this.url + 't=event&tid=' + this.tid + '&cid=' + this.cid + '&ec=' + category + '&ea=' + action);
-		// return this.url + 't=event&tid=' + this.tid + '&cid=' + this.cid + '&ec=' + category + '&ea=' + action;
+	function  event(category, action){
+		loadPixel(settings.url + 't=event&tid=' + settings.tid + '&cid=' + settings.cid + '&ec=' + category + '&ea=' + action);
+		// return settings.url + 't=event&tid=' + settings.tid + '&cid=' + settings.cid + '&ec=' + category + '&ea=' + action;
 
 	}
 
-}
+	return {
+		pageview: pageview,
+		event: event
+	}
 
-// https://creative.mobileembrace.com/test/analytics.php?t=pageview&tid=UA-44687118-28&cid=1471487561962&dp=%2Fhome
+})();
